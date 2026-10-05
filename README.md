@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [What You Need (Hardware + Software)](#1-what-you-need)
 2. [Install ESP-IDF & VS Code](#2-install-esp-idf--vs-code)
@@ -58,7 +58,7 @@ Download and install VS Code from https://code.visualstudio.com/
 7. Set IDF version to **v5.2 (recommended)**
 8. Choose an install path (default is fine, e.g. `C:\Users\YourName\esp\esp-idf`)
 9. Click **Install** and wait 10–20 minutes (it downloads toolchain + libraries)
-10. When done you will see: ✅ **"ESP-IDF is ready"**
+10. When done you will see:  **"ESP-IDF is ready"**
 
 > **Check:** Open a new Terminal in VS Code. Type `idf.py --version`  
 > You should see: `ESP-IDF v5.2.x`
@@ -67,7 +67,7 @@ Download and install VS Code from https://code.visualstudio.com/
 
 ## 3. Wire Your Hardware
 
-> ⚠️ **Always wire with ESP32 UNPLUGGED from USB.**
+>  **Always wire with ESP32 UNPLUGGED from USB.**
 
 ### ST7789 Screen → ESP32-S3
 | ST7789 Pin | Connect to | ESP32-S3 GPIO |
@@ -97,7 +97,7 @@ Download and install VS Code from https://code.visualstudio.com/
 | + (positive) | OUT+ |
 | − (negative) | OUT− |
 
-> 💡 **Changed your pins?** Edit only `main/pins.h` — no other file needs changing.
+>  **Changed your pins?** Edit only `main/pins.h` — no other file needs changing.
 
 ---
 
@@ -138,7 +138,7 @@ Component config → ESP PSRAM → SPI RAM config → Type of SPI RAM chip
 
 Press `S` to save, `Q` to quit menuconfig.
 
-> 💡 **Not sure?** Check your board's product page or datasheet. DevKitC-1 with "N16R8" in the name has Octal PSRAM.
+>  **Not sure?** Check your board's product page or datasheet. DevKitC-1 with "N16R8" in the name has Octal PSRAM.
 
 ---
 
@@ -163,7 +163,7 @@ idf.py build
 First build takes 3–5 minutes. Wait for:  
 `Project build complete. To flash, run: idf.py flash`
 
-> ❌ **Build failed?** See [Common Errors](#9-common-errors--fixes) section below.
+>  **Build failed?** See [Common Errors](#9-common-errors--fixes) section below.
 
 ### Step 5.4 — Flash + Monitor
 ```powershell
@@ -180,7 +180,7 @@ I (xxx) DISPLAY: LVGL ready, display 320x240
 I (xxx) MAIN: Launcher shown — boot complete
 ```
 
-### ✅ Milestone 1 PASS
+###  Milestone 1 PASS
 **Screen shows:** Dark blue background + "myOS" title + 3 buttons (Music / Video / Settings)
 
 To exit monitor: Press `Ctrl + ]`
@@ -209,7 +209,7 @@ I (xxx) WIFI_MGR: Got IP: 192.168.1.105
 ```
 Status on screen turns green: **"Connected  IP: 192.168.x.x"**
 
-### ✅ Milestone 2 PASS
+###  Milestone 2 PASS
 WiFi credentials are saved in flash (NVS). Next boot → auto-connects. No re-entry needed.
 
 ---
@@ -287,7 +287,7 @@ idf.py fullclean
 idf.py build flash monitor
 ```
 
-### ✅ Milestone 3 PASS
+###  Milestone 3 PASS
 Press **Music** on launcher → speaker plays audio → Press Stop → audio stops.
 
 ---
@@ -329,69 +329,69 @@ You will see:
 ### Step 8.5 — Play on ESP32
 1. On the launcher screen, tap **Video**
 2. Enter your **laptop's IP** (e.g. `192.168.1.50`) in the IP field
-3. Press ▶️ **Play**
+3. Press  **Play**
 4. Video plays on screen at ~12 FPS
 
-> 💡 **FPS too low?** Reduce JPEG quality or resolution:
+>  **FPS too low?** Reduce JPEG quality or resolution:
 > ```powershell
 > python mjpeg_server.py --source sample.mp4 --fps 10
 > ```
 
-### ✅ Milestone 4 PASS
+###  Milestone 4 PASS
 Video visible on ESP32 screen. Press Stop → video stops.
 
 ---
 
 ## 9. Common Errors & Fixes
 
-### ❌ `idf.py: command not found`
+###  `idf.py: command not found`
 ESP-IDF environment not loaded. In VS Code terminal:
 ```powershell
 # The ESP-IDF extension auto-sources this. If not, run:
 . $env:IDF_PATH\export.ps1
 ```
 
-### ❌ `No serial port found` / `Could not open COM3`
+###  `No serial port found` / `Could not open COM3`
 - Check USB cable (must be data cable, not charge-only)
 - Check Device Manager for the correct COM port number
 - Install CP2102 / CH340 driver if port not appearing
 
-### ❌ `LVGL: LV_COLOR_DEPTH not 16`
+###  `LVGL: LV_COLOR_DEPTH not 16`
 In `idf.py menuconfig`:
 ```
 Component config → LVGL → Color settings → Color depth → 16
 ```
 
-### ❌ Screen blank / backlight off
+###  Screen blank / backlight off
 - Check GPIO 14 connected to BL/LED pin of screen
 - Swap DC and RST pins — easy to confuse
 - Try lowering SPI clock: in `pins.h` change `40 * 1000 * 1000` to `20 * 1000 * 1000`
 
-### ❌ Screen shows garbled pixels / random colors
+###  Screen shows garbled pixels / random colors
 - Wrong `invert_color` setting for your screen
 - In `display.c`, try changing `true` to `false`:
   ```c
   esp_lcd_panel_invert_color(s_panel, false);
   ```
 
-### ❌ `PSRAM alloc failed`
+###  `PSRAM alloc failed`
 - PSRAM not enabled: run `idf.py menuconfig` → Enable PSRAM
 - Wrong PSRAM type (Octal vs Quad): check your board specs
 
-### ❌ `heap_caps_malloc` returns NULL for video buffer
+###  `heap_caps_malloc` returns NULL for video buffer
 - Not enough PSRAM free. Stop audio before playing video.
 - Reduce `JPEG_BUF_SIZE` in `video_svc.c` from 20KB to 12KB.
 
-### ❌ Audio crackles / stutters
+###  Audio crackles / stutters
 - Increase audio task priority in `audio_svc.c`: change `5` to `6`
 - Make sure audio task is on Core 1 (already set in code)
 
-### ❌ WiFi not connecting
+###  WiFi not connecting
 - Check SSID/password (case-sensitive)
 - WPA2 Enterprise networks (like university WiFi) not supported — use WPA2 Personal
 - ESP32 only supports 2.4 GHz WiFi, not 5 GHz
 
-### ❌ `idf.py update-dependencies` fails
+###  `idf.py update-dependencies` fails
 ```powershell
 # Try manually:
 idf.py add-dependency "lvgl/lvgl>=8.3.0,<9.0.0"
@@ -406,45 +406,45 @@ idf.py add-dependency "espressif/esp_lcd_st7789>=1.2.0"
 ```
 ESP32 Os/
 │
-├── 📄 CMakeLists.txt          Root build file
-├── 📄 partitions.csv          Flash memory layout (8MB)
-├── 📄 sdkconfig.defaults      Pre-tuned settings (PSRAM, fonts, WiFi)
+├──  CMakeLists.txt          Root build file
+├──  partitions.csv          Flash memory layout (8MB)
+├──  sdkconfig.defaults      Pre-tuned settings (PSRAM, fonts, WiFi)
 │
-├── 📁 main/
-│   ├── 📄 main.c              Boot sequence (NVS → Display → Services → Launcher)
-│   ├── 📄 pins.h              ⭐ ALL GPIO numbers defined here — edit for your board
-│   └── 📄 idf_component.yml   Library dependency versions
+├──  main/
+│   ├──  main.c              Boot sequence (NVS → Display → Services → Launcher)
+│   ├──  pins.h               ALL GPIO numbers defined here — edit for your board
+│   └──  idf_component.yml   Library dependency versions
 │
-├── 📁 components/
-│   ├── 📁 display/
+├──  components/
+│   ├──  display/
 │   │   ├── display.h          API: display_init(), display_set_backlight()
 │   │   └── display.c          ST7789 SPI init + LVGL port setup
 │   │
-│   ├── 📁 wifi_mgr/
+│   ├──  wifi_mgr/
 │   │   ├── wifi_mgr.h         API: wifi_mgr_connect(), is_connected(), get_ip()
 │   │   └── wifi_mgr.c         Station mode, NVS save/load, auto-reconnect
 │   │
-│   ├── 📁 audio_svc/
+│   ├──  audio_svc/
 │   │   ├── audio_svc.h        API: audio_svc_play(url), stop(), set_volume()
 │   │   └── audio_svc.c        FreeRTOS queue + ESP-ADF pipeline (Core 1)
 │   │
-│   ├── 📁 video_svc/
+│   ├──  video_svc/
 │   │   ├── video_svc.h        API: video_svc_play(url, canvas), stop()
 │   │   └── video_svc.c        MJPEG HTTP stream + JPEG decode → LVGL canvas
 │   │
-│   └── 📁 apps/
-│       ├── 📁 launcher/       Home screen — 3 app buttons
-│       ├── 📁 music_app/      Music player UI (play/stop/volume)
-│       ├── 📁 video_app/      Video player UI (IP input + canvas)
-│       └── 📁 settings_app/   WiFi SSID/password input + status
+│   └──  apps/
+│       ├──  launcher/       Home screen — 3 app buttons
+│       ├──  music_app/      Music player UI (play/stop/volume)
+│       ├──  video_app/      Video player UI (IP input + canvas)
+│       └──  settings_app/   WiFi SSID/password input + status
 │
-└── 📁 tools/
-    └── 📄 mjpeg_server.py     Run on laptop to stream video to ESP32
+└──  tools/
+    └──  mjpeg_server.py     Run on laptop to stream video to ESP32
 ```
 
 ---
 
-## ⚡ Quick Command Reference
+##  Quick Command Reference
 
 ```powershell
 # Set chip target (once)
@@ -478,14 +478,14 @@ python tools/mjpeg_server.py --source sample.mp4 --fps 12
 
 ---
 
-## 🗺️ Milestone Checklist
+##  Milestone Checklist
 
 | Milestone | What to verify | Status |
 |---|---|---|
-| ✅ M1: Screen | Launcher home screen visible with 3 buttons | |
-| ✅ M2: WiFi | Settings app → connect → green IP shown | |
-| ✅ M3: Music | Music button → audio from speaker | |
-| ✅ M4: Video | Video button → enter laptop IP → video plays | |
+|  M1: Screen | Launcher home screen visible with 3 buttons | |
+|  M2: WiFi | Settings app → connect → green IP shown | |
+|  M3: Music | Music button → audio from speaker | |
+|  M4: Video | Video button → enter laptop IP → video plays | |
 
 ---
 
