@@ -1,0 +1,15 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# ESP-IDF build artifacts
+build/
+sdkconfig
+*.bin
+*.elf
+*.map
+
+# IDE files
+.vscode/
+.idea/
